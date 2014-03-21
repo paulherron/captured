@@ -8,7 +8,7 @@ class FileUploader
   end
 
   def initialize(options)
-    @growl_path = options[:growl_path] || "#{File.dirname(File.expand_path(__FILE__))}/../../resources/growlnotify"
+    @notifier_path = options[:notifier_path] || "#{File.dirname(File.expand_path(__FILE__))}/../../resources/terminal-notifier"
     @config = YAML.load_file(options[:config_file])
     case @config['upload']['type']
     when "eval"
@@ -27,7 +27,7 @@ class FileUploader
       raise "Invalid Type"
     end
   rescue
-    growl "Unable to load config file"
+    notify "Unable to load config file"
     raise "Unable to load config file"
   end
 
@@ -43,26 +43,25 @@ class FileUploader
   end
 
   def process_upload(file)
-    remote_name = Digest::MD5.hexdigest(file+Time.now.to_i.to_s) +  File.extname(file)
-    growl("Processing Upload", "#{File.dirname(File.expand_path(__FILE__))}/../../resources/action_run.png")
+    notify("Processing upload…", "", "captured-uploading")
     @uploader.upload(file)
     remote_path = @uploader.url
     puts "Uploaded '#{file}' to '#{remote_path}'"
     pbcopy remote_path
-    growl("Upload Succeeded", "#{File.dirname(File.expand_path(__FILE__))}/../../resources/green_check.png")
+    notify("Upload succeeded. Paste the URL from the clipboard or click here to view.", remote_path)
     History.append(file, remote_path)
   rescue => e
     puts e
     puts e.backtrace
-    growl(e)
+    notify(e)
   end
 
-  def growl(msg, image = "#{File.dirname(File.expand_path(__FILE__))}/../../resources/red_x.png")
-    puts "grr: #{msg}"
-    if File.exists? @growl_path
-      raise "Growl Failed" unless system("#{@growl_path} -t 'Captured' -m '#{msg}' --image '#{image}'")
+  def notify(message, url = "", group = "captured")
+    puts "grr: #{message}"
+    if File.exists? @notifier_path
+      raise "Notifier Failed" unless system("#{@notifier_path} -title 'Captured' -message '#{message}' -open '#{url}' -group '#{group}' -remove captured-uploading")
     end
   rescue
-    puts "Growl Notify Error"
+    puts "Notify Error"
   end
 end

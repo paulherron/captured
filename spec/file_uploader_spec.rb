@@ -11,7 +11,7 @@ describe "File Uploader" do
     @options = {:config_file => File.dirname(__FILE__) + '/fixtures/scp_config.yml',
       :watch_path => File.dirname(__FILE__) + '/../tmp/watch_path',
       :watch_pattern => Captured.guess_watch_path,
-      :growl_path => File.dirname(__FILE__) + '/bin/mockgrowlnotify'}
+      :notify_path => File.dirname(__FILE__) + '/bin/mockterminalnotify'}
   end
 
   after(:all) do
@@ -27,9 +27,9 @@ describe "File Uploader" do
     fu.pbcopy str
     `pbpaste`.should == str
   end
-  it "should call growl" do
+  it "should call terminal-notify" do
     fu = FileUploader.new @options
     str = "Testing captured is fun for you"
-    fu.growl str
+    fu.notify str
   end
 end

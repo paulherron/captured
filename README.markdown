@@ -15,7 +15,7 @@ I made captured because I wanted to customize and extend screen capture sharing 
 So, I am making some assumptions about the environment that captured runs in. In particular it expects:
 
  * A decent understanding of installing ruby gems
- * That [Growl](http://growl.info/) is installed
+ * That [terminal-notifier](https://github.com/alloy/terminal-notifier) is installed
 
 With that said, once things are installed and configured it really is handy.
 

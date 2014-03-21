@@ -41,8 +41,8 @@ OptionParser.new do |opts|
     options[:watch_path] = path
   end
 
-  opts.on('--growlnotify=PATH', "Path to growlnotify (Default: #{options[:growl_path]})") do |file|
-    options[:growl_path] = file
+  opts.on('--notifier-path=PATH', "Path to terminal-notifier (Default: #{options[:notifier_path]})") do |file|
+    options[:notifier_path] = file
   end
 
   opts.on('--install', "Run at startup") do
@@ -98,7 +98,6 @@ end
 
 if options[:launchd] == true
   Captured::run_once! options
-  sleep 10
   exit
 end
 
